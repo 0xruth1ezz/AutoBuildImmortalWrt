@@ -2,11 +2,13 @@
 # Log file for debugging
 # 目前支持少部分第三方软件apk 通过打开shell/apk-custom-packages.sh的注释来集成
 source shell/apk-custom-packages.sh
+source shell/nikki-packages.sh
 echo "第三方apk软件包: $CUSTOM_PACKAGES"
 LOGFILE="/tmp/uci-defaults-log.txt"
 echo "Starting 99-custom.sh at $(date)" >> $LOGFILE
 echo "编译固件大小为: $PROFILE MB"
 echo "Include Docker: $INCLUDE_DOCKER"
+echo "Include Nikki: ${INCLUDE_NIKKI:-no}"
 
 echo "Create pppoe-settings"
 mkdir -p  /home/build/immortalwrt/files/etc/config
@@ -68,6 +70,12 @@ PACKAGES="$PACKAGES $CUSTOM_PACKAGES"
 if [ "$INCLUDE_DOCKER" = "yes" ]; then
     PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
     echo "Adding package: luci-i18n-dockerman-zh-cn"
+fi
+
+if [ "${INCLUDE_NIKKI:-no}" = "yes" ]; then
+    echo "Adding Nikki packages"
+    nikki_download_packages "openwrt-25.12" "apk" "/home/build/immortalwrt/packages" || exit 1
+    PACKAGES="$PACKAGES $(nikki_package_list)"
 fi
 
 # 若构建openclash 则添加内核

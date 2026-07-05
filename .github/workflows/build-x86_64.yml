@@ -40,6 +40,14 @@ on:
         options:
           - "yes"
           - "no"
+      include_nikki:
+        description: "Include Nikki transparent proxy"
+        required: true
+        default: "yes"
+        type: choice
+        options:
+          - "yes"
+          - "no"
       enable_pppoe:
         description: "Configure PPPoE credentials"
         required: true
@@ -65,6 +73,7 @@ jobs:
       CUSTOM_ROUTER_IP: ${{ inputs.custom_router_ip }}
       ENABLE_PPPOE: ${{ inputs.enable_pppoe }}
       INCLUDE_DOCKER: ${{ inputs.include_docker }}
+      INCLUDE_NIKKI: ${{ inputs.include_nikki }}
       LUCI_VERSION: ${{ inputs.luci_version }}
       PPPOE_ACCOUNT: ${{ inputs.pppoe_account }}
       PPPOE_PASSWORD: ${{ inputs.pppoe_password }}
@@ -123,6 +132,7 @@ jobs:
           echo "Building x86_64 firmware with ImmortalWrt $LUCI_VERSION"
           echo "Rootfs partition size: $PROFILE MB"
           echo "Include Docker: $INCLUDE_DOCKER"
+          echo "Include Nikki: $INCLUDE_NIKKI"
 
           docker run --rm -i \
             --user root \
@@ -134,6 +144,7 @@ jobs:
             -v "$GITHUB_WORKSPACE/$BUILD_SCRIPT:/home/build/immortalwrt/build.sh" \
             -e PROFILE="$PROFILE" \
             -e INCLUDE_DOCKER="$INCLUDE_DOCKER" \
+            -e INCLUDE_NIKKI="$INCLUDE_NIKKI" \
             -e ENABLE_PPPOE="$ENABLE_PPPOE" \
             -e PPPOE_ACCOUNT="$PPPOE_ACCOUNT" \
             -e PPPOE_PASSWORD="$PPPOE_PASSWORD" \
@@ -150,6 +161,7 @@ jobs:
           - Username: root
           - Password: empty
           - Docker plugin: $INCLUDE_DOCKER
+          - Nikki: $INCLUDE_NIKKI
           - Rootfs partition size: $PROFILE MB
           EOF
 
