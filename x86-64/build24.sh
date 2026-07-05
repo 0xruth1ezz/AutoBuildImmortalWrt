@@ -75,6 +75,7 @@ fi
 if [ "${INCLUDE_NIKKI:-no}" = "yes" ]; then
     echo "Adding Nikki packages"
     nikki_download_packages "openwrt-24.10" "ipk" "/home/build/immortalwrt/packages" || exit 1
+    nikki_download_geoip_metadb "/home/build/immortalwrt/files/etc/nikki/run/geoip.metadb" || exit 1
     PACKAGES="$PACKAGES $(nikki_package_list)"
 fi
 

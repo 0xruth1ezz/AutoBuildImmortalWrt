@@ -3,6 +3,8 @@
 NIKKI_REPOSITORY_URL="${NIKKI_REPOSITORY_URL:-https://nikkinikki.pages.dev}"
 NIKKI_ARCH="${NIKKI_ARCH:-x86_64}"
 NIKKI_LANG="${NIKKI_LANG:-zh-cn}"
+NIKKI_GEOIP_METADB_URL="${NIKKI_GEOIP_METADB_URL:-https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip.metadb}"
+NIKKI_GEOIP_METADB_PATH="${NIKKI_GEOIP_METADB_PATH:-/home/build/immortalwrt/files/etc/nikki/run/geoip.metadb}"
 
 nikki_package_list() {
   echo "ca-bundle curl yq ip-full kmod-inet-diag kmod-nft-socket kmod-nft-tproxy kmod-tun kmod-dummy mihomo-meta nikki luci-app-nikki luci-i18n-nikki-${NIKKI_LANG}"
@@ -84,4 +86,24 @@ nikki_download_packages() {
       return 1
     fi
   done
+}
+
+nikki_download_geoip_metadb() {
+  target_path="${1:-$NIKKI_GEOIP_METADB_PATH}"
+  target_dir="$(dirname "$target_path")"
+
+  mkdir -p "$target_dir"
+  echo "Downloading Nikki geoip.metadb: ${NIKKI_GEOIP_METADB_URL}"
+  if ! wget -q "$NIKKI_GEOIP_METADB_URL" -O "$target_path"; then
+    echo "Failed to download Nikki geoip.metadb." >&2
+    return 1
+  fi
+
+  if [ ! -s "$target_path" ]; then
+    echo "Downloaded Nikki geoip.metadb is empty." >&2
+    return 1
+  fi
+
+  chmod 755 "$target_path"
+  echo "Nikki geoip.metadb installed to ${target_path}"
 }
