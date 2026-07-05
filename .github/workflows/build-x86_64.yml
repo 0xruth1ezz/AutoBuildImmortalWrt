@@ -20,9 +20,9 @@ on:
           - "24.10.1"
           - "24.10.0"
       custom_router_ip:
-        description: "Router management IP, for example 192.168.100.1"
+        description: "Router management IP, for example 10.10.1.1"
         required: true
-        default: "192.168.100.1"
+        default: "10.10.1.1"
       profile:
         description: "Rootfs partition size in MB"
         required: true
